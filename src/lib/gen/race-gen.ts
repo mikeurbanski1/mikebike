@@ -9,21 +9,23 @@ export const generateRace = (): Race => {
     const team1 = new Team('Team 1', 1);
     const team2 = new Team('Team 2', 2);
 
-    let q = 0;
-    let r = 2;
-    let s = -2;
+    // let q = 0;
+    // let r = 2;
+    // let s = -2;
 
     race.addTeam(team1);
+    team1.addRider(new Rider(1, team1, { q: 0, r: 0, s: 0 }, RiderHexPosition.LEFT, Direction.S));
+    team1.addRider(new Rider(1, team2, { q: 0, r: 0, s: 0 }, RiderHexPosition.RIGHT, Direction.S));
     race.addTeam(team2);
 
-    for (let i = 0; i < 6; i++) {
-        team1.addRider(
-            new Rider(i + 1, team1, { q: 0, r: i, s: -i }, RiderHexPosition.LEFT, getDirectionByOffset(Direction.N, i))
-        );
-        team2.addRider(
-            new Rider(i + 1, team2, { q: 0, r: i, s: -i }, RiderHexPosition.RIGHT, getDirectionByOffset(Direction.N, i))
-        );
-    }
+    // for (let i = 0; i < 6; i++) {
+    //     team1.addRider(
+    //         new Rider(i + 1, team1, { q: 0, r: i, s: -i }, RiderHexPosition.LEFT, getDirectionByOffset(Direction.N, i))
+    //     );
+    //     team2.addRider(
+    //         new Rider(i + 1, team2, { q: 0, r: i, s: -i }, RiderHexPosition.RIGHT, getDirectionByOffset(Direction.N, i))
+    //     );
+    // }
 
     return race;
 };

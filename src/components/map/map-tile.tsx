@@ -1,17 +1,20 @@
 import { useState } from 'react';
 import { Hexagon, Text } from 'react-hexgrid';
 
-import type { SegmentHexTile } from '../../lib/models/map.ts';
+import type { SegmentHexTile } from '../../lib/map/map.ts';
 import { roadCenterColor, roadColor, selectedHexColor } from '../../lib/utils/consts.ts';
+import { RiderIcon } from './rider.tsx';
 
 export type HexProps = {
     hexTile: SegmentHexTile;
+    setSelectedHex: (hex?: SegmentHexTile) => void;
+    selected?: boolean;
 };
 
-export function MapTile({ hexTile }: HexProps) {
-    const [selected, setSelected] = useState<boolean>(false);
-
+export function MapTile({ hexTile, setSelectedHex, selected }: HexProps) {
     const { q, r, s, isCenter } = hexTile;
+
+    const riders = hexTile.riders?.map((rider) => <RiderIcon key={rider.bibNumber} rider={rider} />);
 
     return (
         <Hexagon
@@ -25,10 +28,11 @@ export function MapTile({ hexTile }: HexProps) {
             }}
             onClick={() => {
                 console.log(`Clicked ${q}, ${r}, ${s}`);
-                setSelected((prev) => !prev);
+                setSelectedHex(selected ? undefined : hexTile);
             }}
         >
             <Text fontSize={10}>{`${q},${r},${s}`}</Text>
+            {riders}
         </Hexagon>
     );
 }

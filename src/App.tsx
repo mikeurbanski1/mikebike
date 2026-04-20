@@ -3,12 +3,13 @@ import { HexGrid, Layout } from 'react-hexgrid';
 import './App.css';
 
 import Rand from 'rand-seed';
+import React from 'react';
 
-import { Map } from './components/map/map';
+import { MapPanel } from './components/map/map';
 import { generateRace } from './lib/gen/race-gen.ts';
 import { simpleStraightRoute } from './lib/gen/route-gen.ts';
 import { Route } from './lib/map/route';
-import { Direction, PadDirection, TurnDirection } from './lib/models/map.ts';
+import { Direction, PadDirection, TurnDirection, type HexTile } from './lib/models/map.ts';
 
 let seed: string | undefined = undefined;
 // seed = '0.33578115234574535';
@@ -36,7 +37,7 @@ let race = generateRace();
 function App() {
     return (
         <div className="App">
-            <Map route={route} race={race} />
+            <MapPanel route={route} race={race} />
         </div>
     );
 }

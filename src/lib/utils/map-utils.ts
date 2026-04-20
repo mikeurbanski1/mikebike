@@ -1,3 +1,4 @@
+import { SegmentHexTile } from '../map/map.ts';
 import { Route } from '../map/route.ts';
 import {
     Axis,
@@ -9,7 +10,6 @@ import {
     type PathSegment,
     type RawSegment,
     type RouteHexes,
-    type SegmentHexTile,
     type UndirectedSegment,
 } from '../models/map.ts';
 import { getHexKey } from './hex-utils.ts';
@@ -189,7 +189,7 @@ export const getSegmentEnd = (startHex: HexTile, direction: Direction, length: n
 };
 
 const fillRow = (startHex: HexTile, segment: PathSegment): SegmentHexTile[] => {
-    const row: SegmentHexTile[] = [{ ...startHex, segmentNumber: segment.index, isCenter: true }];
+    const row: SegmentHexTile[] = [new SegmentHexTile(startHex, segment.index, true)];
     let leftHex = startHex;
     let rightHex = startHex;
     const padding = Math.floor(segment.width / 2);
@@ -198,11 +198,11 @@ const fillRow = (startHex: HexTile, segment: PathSegment): SegmentHexTile[] => {
         const rightNeighbor = getRightNeighbor(rightHex, segment.direction, q);
 
         if (q <= segment.padLeft) {
-            row.unshift({ ...leftNeighbor, segmentNumber: segment.index, isCenter: false });
+            row.unshift(new SegmentHexTile(leftNeighbor, segment.index, false));
         }
 
         if (q <= segment.padRight) {
-            row.push({ ...rightNeighbor, segmentNumber: segment.index, isCenter: false });
+            row.push(new SegmentHexTile(rightNeighbor, segment.index, false));
         }
 
         leftHex = leftNeighbor;
@@ -253,11 +253,7 @@ export const generateTurnHexes = (
     if (prevSamePadding === 0 && nextSamePadding > 0) {
         for (let i = 1; i <= nextSamePadding; i++) {
             hexToAdd = getSameNeighborFn(hexToAdd, nextSegment.direction, i);
-            turnHexes.push({
-                ...hexToAdd,
-                segmentNumber: previousSegment.index,
-                isCenter: false,
-            });
+            turnHexes.push(new SegmentHexTile(hexToAdd, previousSegment.index, false));
         }
     } else if (prevSamePadding === 1 && nextSamePadding === 3) {
         // another very special case - going from 1 to 3 on the inside only, we need to
@@ -268,11 +264,7 @@ export const generateTurnHexes = (
             3,
             turn === TurnDirection.LEFT ? PadDirection.LEFT : PadDirection.RIGHT
         );
-        turnHexes.push({
-            ...paddingHex,
-            segmentNumber: nextSegment.index,
-            isCenter: false,
-        });
+        turnHexes.push(new SegmentHexTile(paddingHex, nextSegment.index, false));
     }
 
     // analogous - if the OUTSIDE padding goes from 1 to 0, we need to remove the outside padding of the end of the previous segment
@@ -319,11 +311,7 @@ export const generateTurnHexes = (
 
         let nextHex = getNeighbor(paddingColumn, previousSegment.direction);
         for (let i = 0; i < fillDistance; i++) {
-            turnHexes.push({
-                ...nextHex,
-                segmentNumber: previousSegment.index,
-                isCenter: false,
-            });
+            turnHexes.push(new SegmentHexTile(nextHex, previousSegment.index, false));
             nextHex = getNeighbor(nextHex, previousSegment.direction);
         }
         p++;
@@ -397,7 +385,7 @@ export const generateRouteHexes = (route: Route): RouteHexes => {
     boundingBox.rsMin = topTile!.r - topTile!.s;
     boundingBox.rsMax = bottomTile!.r - bottomTile!.s;
 
-    return { hexes, boundingBox };
+    return { hexes, boundingBox, keyToHexMap: hexMap };
 };
 
 export const getSegmentPadding = (segment: RawSegment): { padLeft: number; padRight: number } => {

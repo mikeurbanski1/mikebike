@@ -29,7 +29,6 @@ export function RiderIcon({ rider: { location, facing, hexPosition, team } }: Ri
             stroke={teamColors[team.teamNumber - 1]}
             strokeWidth={3}
             fill="none"
-            onClick={() => console.log(`Clicked rider at ${JSON.stringify(location)} - ${facing} ${hexPosition}`)}
         >
             <polyline points={arrowPoints} transform={`translate(${xOffset}, 0)`} />
             <line x1={0} y1={arrowTip} x2={0} y2={-arrowTip} transform={`translate(${xOffset}, 0)`} />

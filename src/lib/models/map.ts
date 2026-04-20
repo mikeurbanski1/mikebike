@@ -1,4 +1,4 @@
-import type { Rider } from '../game/rider';
+import type { SegmentHexTile } from '../map/map';
 
 export interface BoundingBox {
     qMin: number;
@@ -7,14 +7,9 @@ export interface BoundingBox {
     rsMax: number;
 }
 
-export interface SegmentHexTile extends HexTile {
-    segmentNumber: number;
-    isCenter: boolean;
-    riders?: [] | [Rider] | [Rider, Rider];
-}
-
 export interface RouteHexes {
     hexes: SegmentHexTile[];
+    keyToHexMap: Map<string, SegmentHexTile>;
     // the rectangular view that emcompasses all the hexes, used for setting the svg viewbox
     boundingBox: {
         qMin: number;
