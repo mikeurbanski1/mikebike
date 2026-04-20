@@ -9,7 +9,7 @@ const arrowEnds = [gridHexSize / 3, gridHexSize / 6];
 const arrowTip = gridHexSize / 2;
 const centerOffset = gridHexSize / 3;
 
-const polylinePoints = `-${arrowEnds[0]},-${arrowEnds[1]} 0,${-arrowTip} ${arrowEnds[0]},${-arrowEnds[1]} 0,${-arrowTip} 0,${arrowTip}`;
+const arrowPoints = `-${arrowEnds[0]},-${arrowEnds[1]} 0,${-arrowTip} ${arrowEnds[0]},${-arrowEnds[1]}`;
 
 export type RiderProps = {
     rider: Rider;
@@ -31,7 +31,8 @@ export function RiderIcon({ rider: { location, facing, hexPosition, team } }: Ri
             fill="none"
             onClick={() => console.log(`Clicked rider at ${JSON.stringify(location)} - ${facing} ${hexPosition}`)}
         >
-            <polyline points={polylinePoints} transform={`translate(${xOffset}, 0)`} />
+            <polyline points={arrowPoints} transform={`translate(${xOffset}, 0)`} />
+            <line x1={0} y1={arrowTip} x2={0} y2={-arrowTip} transform={`translate(${xOffset}, 0)`} />
         </g>
     );
 }

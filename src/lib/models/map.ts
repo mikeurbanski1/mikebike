@@ -1,6 +1,4 @@
 import type { Rider } from '../game/rider';
-import { getHexKey } from '../utils/hex-utils';
-import { getLeftNeighbor, getNeighbor, getRightNeighbor } from '../utils/map-utils';
 
 export interface BoundingBox {
     qMin: number;
