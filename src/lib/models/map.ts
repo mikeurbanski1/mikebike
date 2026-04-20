@@ -1,6 +1,6 @@
+import type { Rider } from '../game/rider';
 import { getHexKey } from '../utils/hex-utils';
-import { getLeftNeighbor, getNeighbor, getRightNeighbor } from '../utils/path-utils';
-import type { Direction, HexTile } from './hex';
+import { getLeftNeighbor, getNeighbor, getRightNeighbor } from '../utils/map-utils';
 
 export interface BoundingBox {
     qMin: number;
@@ -12,6 +12,7 @@ export interface BoundingBox {
 export interface SegmentHexTile extends HexTile {
     segmentNumber: number;
     isCenter: boolean;
+    riders?: [] | [Rider] | [Rider, Rider];
 }
 
 export interface RouteHexes {
@@ -64,3 +65,33 @@ export interface NavigationInstruction {
     segment: PathSegment;
     turn?: TurnDirection;
 }
+export interface HexTile {
+    q: number;
+    r: number;
+    s: number;
+}
+
+export const Direction = {
+    NE: 'NE',
+    SE: 'SE',
+    SW: 'SW',
+    NW: 'NW',
+    S: 'S',
+    N: 'N',
+} as const;
+
+export type Direction = (typeof Direction)[keyof typeof Direction];
+
+export const Axis = {
+    Q: 'Q',
+    R: 'R',
+    S: 'S',
+} as const;
+export type Axis = (typeof Axis)[keyof typeof Axis];
+
+export const RiderHexPosition = {
+    CENTER: 'CENTER',
+    LEFT: 'LEFT',
+    RIGHT: 'RIGHT',
+} as const;
+export type RiderHexPosition = (typeof RiderHexPosition)[keyof typeof RiderHexPosition];

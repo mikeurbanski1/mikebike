@@ -1,10 +1,8 @@
-// react function component to render a hex (to avoid re rendering all on any hex click)
-
 import { useState } from 'react';
 import { Hexagon, Text } from 'react-hexgrid';
 
-import type { HexTile } from '../../lib/models/hex';
 import type { SegmentHexTile } from '../../lib/models/map.ts';
+import { roadCenterColor, roadColor, selectedHexColor } from '../../lib/utils/consts.ts';
 
 export type HexProps = {
     hexTile: SegmentHexTile;
@@ -12,8 +10,6 @@ export type HexProps = {
 
 export function MapTile({ hexTile }: HexProps) {
     const [selected, setSelected] = useState<boolean>(false);
-    const baseColor = `hsl(${(hexTile.segmentNumber * 360) / 15}, 70%, 50%)`;
-    const centerLineColor = `hsl(${(hexTile.segmentNumber * 360) / 15}, 70%, 70%)`;
 
     const { q, r, s, isCenter } = hexTile;
 
@@ -23,7 +19,7 @@ export function MapTile({ hexTile }: HexProps) {
             r={r}
             s={s}
             style={{
-                fill: isCenter ? centerLineColor : baseColor,
+                fill: selected ? selectedHexColor : isCenter ? roadCenterColor : roadColor,
                 stroke: '#333',
                 cursor: 'pointer',
             }}

@@ -2,17 +2,22 @@ import { useMemo } from 'react';
 import { HexGrid, Layout } from 'react-hexgrid';
 import ScrollContainer from 'react-indiana-drag-scroll';
 
+import type { Race } from '../../lib/game/race';
 import type { Route } from '../../lib/map/route';
-import { hexHeight, hexWidth } from '../../lib/utils/consts';
-import { generateRouteHexes } from '../../lib/utils/path-utils';
+import { RiderHexPosition } from '../../lib/models/map';
+import { gridHexSize, hexHeight, hexWidth } from '../../lib/utils/consts';
+import { generateRouteHexes } from '../../lib/utils/map-utils';
 import { MapTile } from './map-tile';
+import { RiderIcon } from './rider';
 
 export interface MapProps {
     route: Route;
+    race: Race;
 }
 
-export function Map({ route }: MapProps) {
+export function Map({ route, race }: MapProps) {
     const { hexes, boundingBox } = useMemo(() => generateRouteHexes(route), [route]);
+    const riders = useMemo(() => race.teams.flatMap((team) => team.riders), [race]);
 
     const qDiff = boundingBox.qMax - boundingBox.qMin;
     const rsDiff = boundingBox.rsMax - boundingBox.rsMin;
@@ -56,11 +61,14 @@ export function Map({ route }: MapProps) {
                 height={gridSize.height}
                 viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}
             >
-                <Layout size={{ x: hexWidth / 2, y: hexWidth / 2 }} flat={true} spacing={1} origin={{ x: 0, y: 0 }}>
+                <Layout size={{ x: gridHexSize, y: gridHexSize }} flat={true} spacing={1} origin={{ x: 0, y: 0 }}>
                     {hexes.map((hexTile) => {
                         return <MapTile key={`${hexTile.q},${hexTile.r},${hexTile.s}`} hexTile={hexTile} />;
                     })}
                 </Layout>
+                {riders.map((rider) => (
+                    <RiderIcon key={rider.bibNumber} rider={rider} />
+                ))}
             </HexGrid>
         </ScrollContainer>
     );

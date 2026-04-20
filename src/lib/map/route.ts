@@ -1,6 +1,12 @@
-import type { Direction } from '../models/hex';
-import type { NavigationInstruction, PadDirection, PathSegment, Turn, TurnDirection } from '../models/map.ts';
-import { getNewDirection, getSegmentEnd, getSegmentPadding, normalizeSegment } from '../utils/path-utils';
+import type {
+    Direction,
+    NavigationInstruction,
+    PadDirection,
+    PathSegment,
+    Turn,
+    TurnDirection,
+} from '../models/map.ts';
+import { getNewDirection, getSegmentEnd, getSegmentPadding, normalizeSegment } from '../utils/map-utils.ts';
 
 export class Route implements Iterable<NavigationInstruction> {
     segments: PathSegment[];

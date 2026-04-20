@@ -1,9 +1,11 @@
-import { Route } from '../map/route';
-import { Axis, Direction, type HexTile } from '../models/hex';
+import { Route } from '../map/route.ts';
 import {
+    Axis,
+    Direction,
     PadDirection,
     TurnDirection,
     type BoundingBox,
+    type HexTile,
     type PathSegment,
     type RawSegment,
     type RouteHexes,
@@ -11,7 +13,7 @@ import {
     type Turn,
     type UndirectedSegment,
 } from '../models/map.ts';
-import { getHexKey } from './hex-utils';
+import { getHexKey } from './hex-utils.ts';
 
 const directions = [Direction.N, Direction.NE, Direction.SE, Direction.S, Direction.SW, Direction.NW];
 
@@ -415,6 +417,12 @@ export const getSegmentPadding = (segment: RawSegment): { padLeft: number; padRi
         padLeft,
         padRight,
     };
+};
+
+export const hexPixelCenter = (hex: HexTile, hexSize: { x: number; y: number }) => {
+    const x = hexSize.x * ((3 / 2) * hex.q);
+    const y = hexSize.y * ((Math.sqrt(3) / 2) * hex.q + Math.sqrt(3) * hex.r);
+    return { x, y };
 };
 
 export const normalizeSegment = (segment: RawSegment, previousSegment?: PathSegment): UndirectedSegment => {
