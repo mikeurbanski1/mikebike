@@ -1,13 +1,13 @@
-import type { Team } from './team';
+import type { RaceTeam } from './team';
 
 export class Race {
-    teams: Team[];
+    teams: RaceTeam[];
 
     constructor() {
         this.teams = [];
     }
 
-    addTeam(team: Team): void {
+    addTeam(team: RaceTeam): void {
         this.teams.push(team);
     }
 }

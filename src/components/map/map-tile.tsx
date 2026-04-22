@@ -14,8 +14,6 @@ export type HexProps = {
 export function MapTile({ hexTile, setSelectedHex, selected }: HexProps) {
     const { q, r, s, isCenter } = hexTile;
 
-    const riders = hexTile.riders?.map((rider) => <RiderIcon key={rider.bibNumber} rider={rider} />);
-
     return (
         <Hexagon
             q={q}
@@ -32,7 +30,7 @@ export function MapTile({ hexTile, setSelectedHex, selected }: HexProps) {
             }}
         >
             <Text fontSize={10}>{`${q},${r},${s}`}</Text>
-            {riders}
+            {hexTile.rider && <RiderIcon rider={hexTile.rider} />}
         </Hexagon>
     );
 }

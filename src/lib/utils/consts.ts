@@ -1,4 +1,4 @@
-import { Direction, RiderHexPosition } from '../models/map';
+import { Direction } from '../models/map';
 
 export const hexWidth = 80;
 export const hexHeight = Math.sqrt(3) * (hexWidth / 2);

@@ -1,22 +1,26 @@
 import { Race } from '../game/race';
-import { Rider } from '../game/rider';
-import { Team } from '../game/team';
-import { Direction, RiderHexPosition } from '../models/map';
-import { getDirectionByOffset } from '../utils/map-utils';
+import { RaceRider, Rider } from '../game/rider';
+import { RaceTeam, Team } from '../game/team';
+import { HexTile } from '../map/map';
+import { Direction } from '../models/map';
 
 export const generateRace = (): Race => {
     const race = new Race();
-    const team1 = new Team('Team 1', 1);
-    const team2 = new Team('Team 2', 2);
+
+    const team1 = new Team('Team 1');
+    team1.addRider(new Rider('Team1R1', team1));
+
+    const raceTeam1 = new RaceTeam(team1.name, 1);
+    raceTeam1.addRaceRider(new RaceRider('Team1R1', raceTeam1, 1, new HexTile(0, 0, 0), Direction.S));
+    // const team2 = new Team('Team 2', 2);
 
     // let q = 0;
     // let r = 2;
     // let s = -2;
 
-    race.addTeam(team1);
-    team1.addRider(new Rider(1, team1, { q: 0, r: 0, s: 0 }, RiderHexPosition.LEFT, Direction.S));
-    team1.addRider(new Rider(1, team2, { q: 0, r: 0, s: 0 }, RiderHexPosition.RIGHT, Direction.S));
-    race.addTeam(team2);
+    race.addTeam(raceTeam1);
+    // team1.addRider(new Rider('Team2R1', 2, team2, { q: 0, r: 0, s: 0 }, Direction.S));
+    // race.addTeam(team2);
 
     // for (let i = 0; i < 6; i++) {
     //     team1.addRider(

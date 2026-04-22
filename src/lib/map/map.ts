@@ -1,5 +1,4 @@
-import type { Rider } from '../game/rider';
-import type { HexTile } from '../models/map';
+import type { RaceRider } from '../game/rider';
 
 // export interface SegmentHexTile extends HexTile {
 //     segmentNumber: number;
@@ -7,35 +6,44 @@ import type { HexTile } from '../models/map';
 //     riders?: Rider[];
 // }
 
-export class SegmentHexTile implements HexTile {
+export class HexTile {
+    key: string;
     q: number;
     r: number;
     s: number;
-    segmentNumber: number;
-    isCenter: boolean;
-    riders?: Rider[];
 
-    constructor({ q, r, s }: HexTile, segmentNumber: number, isCenter: boolean) {
+    constructor(q: number, r: number, s: number) {
+        if (q + r + s !== 0) {
+            throw new Error(`Invalid hex tile with q:${q}, r:${r}, s:${s} - q + r + s must equal 0`);
+        }
         this.q = q;
         this.r = r;
         this.s = s;
+        this.key = `${q},${r},${s}`;
+    }
+}
+
+export class SegmentHexTile extends HexTile {
+    segmentNumber: number;
+    isCenter: boolean;
+    rider?: RaceRider;
+
+    constructor({ q, r, s }: HexTile, segmentNumber: number, isCenter: boolean) {
+        super(q, r, s);
         this.segmentNumber = segmentNumber;
         this.isCenter = isCenter;
     }
 
-    addRider(rider: Rider) {
-        if (!this.riders) {
-            this.riders = [rider];
-        } else if (this.riders.length < 2) {
-            if (!this.riders.find((r) => r.bibNumber === rider.bibNumber)) {
-                this.riders.push(rider);
-            } else {
-                console.warn(`Rider ${rider.bibNumber} is already on hex ${this.q},${this.r},${this.s}`);
-            }
-        } else {
-            console.warn(
-                `Hex ${this.q},${this.r},${this.s} already has 2 riders ${this.riders.map((r) => r.bibNumber).join(', ')}, cannot add rider ${rider.bibNumber}`
-            );
+    addRider(rider: RaceRider): boolean {
+        // handle react double render
+        if (this.rider && this.rider.bibNumber !== rider.bibNumber) {
+            return false;
         }
+        this.rider = rider;
+        return true;
+    }
+
+    removeRider() {
+        this.rider = undefined;
     }
 }

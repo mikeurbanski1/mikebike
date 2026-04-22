@@ -1,4 +1,4 @@
-import type { SegmentHexTile } from '../map/map';
+import type { HexTile, SegmentHexTile } from '../map/map';
 
 export interface BoundingBox {
     qMin: number;
@@ -58,11 +58,6 @@ export interface NavigationInstruction {
     segment: PathSegment;
     turn?: TurnDirection;
 }
-export interface HexTile {
-    q: number;
-    r: number;
-    s: number;
-}
 
 export const Direction = {
     NE: 'NE',
@@ -82,9 +77,9 @@ export const Axis = {
 } as const;
 export type Axis = (typeof Axis)[keyof typeof Axis];
 
-export const RiderHexPosition = {
-    CENTER: 'CENTER',
-    LEFT: 'LEFT',
-    RIGHT: 'RIGHT',
-} as const;
-export type RiderHexPosition = (typeof RiderHexPosition)[keyof typeof RiderHexPosition];
+// export const RiderHexPosition = {
+//     CENTER: 'CENTER',
+//     LEFT: 'LEFT',
+//     RIGHT: 'RIGHT',
+// } as const;
+// export type RiderHexPosition = (typeof RiderHexPosition)[keyof typeof RiderHexPosition];

@@ -10,7 +10,13 @@ module.exports = {
         sourceType: 'module',
     },
     plugins: ['@typescript-eslint', 'import'],
-    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended-type-checked', 'plugin:import/recommended', 'plugin:import/typescript', 'prettier'],
+    extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended-type-checked',
+        'plugin:import/recommended',
+        'plugin:import/typescript',
+        'prettier',
+    ],
     rules: {
         '@typescript-eslint/consistent-type-imports': 'error',
         'prettier/prettier': [

@@ -1,49 +1,20 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { HexGrid, Layout } from 'react-hexgrid';
 import ScrollContainer from 'react-indiana-drag-scroll';
 
-import type { Race } from '../../lib/game/race';
-import type { SegmentHexTile } from '../../lib/map/map';
-import type { Route } from '../../lib/map/route';
-import { RiderHexPosition, type HexTile } from '../../lib/models/map';
+import type { RaceManager } from '../../lib/game/race-manager';
+import type { HexTile, SegmentHexTile } from '../../lib/map/map';
 import { gridHexSize, hexHeight, hexWidth } from '../../lib/utils/consts';
-import { getHexKey } from '../../lib/utils/hex-utils';
-import { generateRouteHexes } from '../../lib/utils/map-utils';
-import { HexInfoPanel } from '../ui/info-panels';
 import { MapTile } from './map-tile';
-import { RiderIcon } from './rider';
 
 export interface MapProps {
-    route: Route;
-    race: Race;
+    raceManager: RaceManager;
+    selectedHex?: SegmentHexTile;
+    setSelectedHexFn: (hex?: HexTile) => void;
 }
 
-export function MapPanel({ route, race }: MapProps) {
-    const { hexes, boundingBox, keyToHexMap } = useMemo(() => generateRouteHexes(route), [route]);
-    const riders = useMemo(() => {
-        console.log('Adding riders initially');
-        const riders = race.teams.flatMap((team) => team.riders);
-        riders.forEach((rider) => {
-            const hexKey = getHexKey(rider.location);
-            const hexTile = keyToHexMap.get(hexKey);
-            if (!hexTile) {
-                console.warn(`Rider ${rider.bibNumber} is located at ${hexKey}, which is not on the route`);
-                return;
-            }
-            rider.location = hexTile;
-            hexTile.addRider(rider);
-        });
-        return riders;
-    }, [race, keyToHexMap]);
-
-    const [selectedHex, setSelectedHex] = React.useState<SegmentHexTile | undefined>(undefined);
-    const setSelectedHexFn = useCallback(
-        (hex?: HexTile) => {
-            console.log('Setting selected hex to', hex);
-            setSelectedHex(hex ? keyToHexMap.get(getHexKey(hex)) : undefined);
-        },
-        [route]
-    );
+export function MapPanel({ raceManager, selectedHex, setSelectedHexFn }: MapProps) {
+    const { hexes, boundingBox } = useMemo(() => raceManager.routeHexes, [raceManager]);
 
     const qDiff = boundingBox.qMax - boundingBox.qMin;
     const rsDiff = boundingBox.rsMax - boundingBox.rsMin;
@@ -92,7 +63,7 @@ export function MapPanel({ route, race }: MapProps) {
                         {hexes.map((hexTile) => {
                             return (
                                 <MapTile
-                                    key={getHexKey(hexTile)}
+                                    key={hexTile.key}
                                     hexTile={hexTile}
                                     setSelectedHex={setSelectedHexFn}
                                     selected={
@@ -106,7 +77,6 @@ export function MapPanel({ route, race }: MapProps) {
                     </Layout>
                 </HexGrid>
             </ScrollContainer>
-            <HexInfoPanel hex={selectedHex} />
         </div>
     );
 }

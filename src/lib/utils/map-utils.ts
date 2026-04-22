@@ -1,4 +1,4 @@
-import { SegmentHexTile } from '../map/map.ts';
+import { HexTile, SegmentHexTile } from '../map/map.ts';
 import { Route } from '../map/route.ts';
 import {
     Axis,
@@ -6,13 +6,11 @@ import {
     PadDirection,
     TurnDirection,
     type BoundingBox,
-    type HexTile,
     type PathSegment,
     type RawSegment,
     type RouteHexes,
     type UndirectedSegment,
 } from '../models/map.ts';
-import { getHexKey } from './hex-utils.ts';
 
 const directions = [Direction.N, Direction.NE, Direction.SE, Direction.S, Direction.SW, Direction.NW];
 
@@ -56,19 +54,11 @@ export const getLeftNeighbor = (baseHex: HexTile, travelDirection: Direction, ce
 // };
 
 export const getHexByVector = (baseHex: HexTile, vector: HexTile): HexTile => {
-    return {
-        q: baseHex.q + vector.q,
-        r: baseHex.r + vector.r,
-        s: baseHex.s + vector.s,
-    };
+    return new HexTile(baseHex.q + vector.q, baseHex.r + vector.r, baseHex.s + vector.s);
 };
 
 export const getVectorBetweenHexes = (fromHex: HexTile, toHex: HexTile): HexTile => {
-    return {
-        q: toHex.q - fromHex.q,
-        r: toHex.r - fromHex.r,
-        s: toHex.s - fromHex.s,
-    };
+    return new HexTile(toHex.q - fromHex.q, toHex.r - fromHex.r, toHex.s - fromHex.s);
 };
 
 /**
@@ -82,8 +72,8 @@ export const getDistanceToAxis = (
     toAxis: Axis,
     travelDirection: Direction
 ): number => {
-    const fromAxisValue = fromHex[toAxis.toLowerCase() as keyof HexTile];
-    const toAxisValue = toHex[toAxis.toLowerCase() as keyof HexTile];
+    const fromAxisValue = fromHex[toAxis.toLowerCase() as keyof HexTile] as number;
+    const toAxisValue = toHex[toAxis.toLowerCase() as keyof HexTile] as number;
 
     if (
         toAxis === Axis.Q &&
@@ -129,17 +119,17 @@ export const getDistanceToAxis = (
 export const getDirectionVector = (direction: Direction, scalar: number = 1): HexTile => {
     switch (direction) {
         case Direction.NE:
-            return { q: scalar, r: -scalar, s: 0 };
+            return new HexTile(scalar, -scalar, 0);
         case Direction.SE:
-            return { q: scalar, r: 0, s: -scalar };
+            return new HexTile(scalar, 0, -scalar);
         case Direction.SW:
-            return { q: -scalar, r: scalar, s: 0 };
+            return new HexTile(-scalar, scalar, 0);
         case Direction.NW:
-            return { q: -scalar, r: 0, s: scalar };
+            return new HexTile(-scalar, 0, scalar);
         case Direction.N:
-            return { q: 0, r: -scalar, s: scalar };
+            return new HexTile(0, -scalar, scalar);
         case Direction.S:
-            return { q: 0, r: scalar, s: -scalar };
+            return new HexTile(0, scalar, -scalar);
     }
 };
 
@@ -214,7 +204,7 @@ const fillRow = (startHex: HexTile, segment: PathSegment): SegmentHexTile[] => {
 const generateSegmentHexes = (segment: PathSegment, startHex?: HexTile): SegmentHexTile[] => {
     const hexes: SegmentHexTile[] = [];
     const isFirstSegment = startHex === undefined;
-    let currentHex = startHex ?? { q: 0, r: 0, s: 0 };
+    let currentHex = startHex ?? new HexTile(0, 0, 0);
 
     // the length represents the number of edges crossed, so we only render the path start on the first segment
     if (isFirstSegment) {
@@ -304,7 +294,7 @@ export const generateTurnHexes = (
             // we have to REMOVE this hex and go backwards until we hit the axis (but do not remove that one)
             let hexToRemove = paddingColumn;
             for (let i = 0; i < -fillDistance; i++) {
-                hexesToRemove.add(getHexKey(hexToRemove));
+                hexesToRemove.add(hexToRemove.key);
                 hexToRemove = getNeighbor(hexToRemove, oppositeDirection);
             }
         }
@@ -340,7 +330,7 @@ export const generateRouteHexes = (route: Route): RouteHexes => {
             // add a hex on the turn to make it look smoother
             const turnHexes = generateTurnHexes(turn, previousSegment!, segment);
             for (const turnHex of turnHexes.hexesToAdd) {
-                const key = getHexKey(turnHex);
+                const key = turnHex.key;
                 if (hexMap.has(key)) {
                     continue;
                 }
@@ -354,7 +344,7 @@ export const generateRouteHexes = (route: Route): RouteHexes => {
         const segmentHexes = generateSegmentHexes(segment, currentHex);
 
         for (const segmentHex of segmentHexes) {
-            const key = getHexKey(segmentHex);
+            const key = segmentHex.key;
             if (hexMap.has(key)) {
                 continue;
             }
