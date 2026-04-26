@@ -3,18 +3,24 @@ import { HexGrid, Layout } from 'react-hexgrid';
 import ScrollContainer from 'react-indiana-drag-scroll';
 
 import type { RaceManager } from '../../lib/game/race-manager';
+import type { RaceRider } from '../../lib/game/rider';
 import type { HexTile, SegmentHexTile } from '../../lib/map/map';
-import { gridHexSize, hexHeight, hexWidth } from '../../lib/utils/consts';
+import { gridHexSize, hexHeight, hexWidth, teamColors } from '../../lib/utils/consts';
 import { MapTile } from './map-tile';
+import { RiderIcon } from './rider';
 
 export interface MapProps {
     raceManager: RaceManager;
     selectedHex?: SegmentHexTile;
-    setSelectedHexFn: (hex?: HexTile) => void;
+    setSelectedHexFn: (hex: HexTile, rider?: RaceRider) => void;
 }
 
 export function MapPanel({ raceManager, selectedHex, setSelectedHexFn }: MapProps) {
-    const { hexes, boundingBox } = useMemo(() => raceManager.routeHexes, [raceManager]);
+    console.log('in map panel render');
+    const { hexes, boundingBox } = useMemo(() => ({ ...raceManager.routeHexes }), [raceManager]);
+
+    const riders = raceManager.getAllRiders();
+    console.log(riders);
 
     const qDiff = boundingBox.qMax - boundingBox.qMin;
     const rsDiff = boundingBox.rsMax - boundingBox.rsMin;
@@ -75,6 +81,15 @@ export function MapPanel({ raceManager, selectedHex, setSelectedHexFn }: MapProp
                             );
                         })}
                     </Layout>
+                    {riders.map((rider) => (
+                        <RiderIcon
+                            key={rider.id}
+                            location={rider.location}
+                            facing={rider.facing}
+                            color={teamColors[rider.team.teamNumber - 1]}
+                            setSelectedHexFn={setSelectedHexFn}
+                        />
+                    ))}
                 </HexGrid>
             </ScrollContainer>
         </div>

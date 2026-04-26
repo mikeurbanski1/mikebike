@@ -29,23 +29,26 @@ export function LiveRace({ race, route }: LiveRaceProps): JSX.Element {
     }, [raceManager]);
 
     const endTurn = useCallback(() => {
-        console.log('Ending turn with riders:', riderIdMap);
-        riderIdMap.forEach((rider) => {
-            if (rider.nextCommand) {
-                console.log(`Rider ${rider.bibNumber} has command:`, rider.nextCommand);
-            } else {
-                console.log(`Rider ${rider.bibNumber} has no command`);
-            }
-        });
-    }, [riderIdMap]);
+        raceManager.simNextTurn();
+        setSelectedHex(undefined);
+        setSelectedRider(undefined);
+    }, [raceManager]);
 
     const [selectedHex, setSelectedHex] = React.useState<SegmentHexTile | undefined>(undefined);
+    const [selectedRider, setSelectedRider] = React.useState<RaceRider | undefined>(undefined);
     const setSelectedHexFn = useCallback(
-        (hex?: HexTile) => {
-            console.log('Setting selected hex to', hex);
-            setSelectedHex(hex ? keyToHexMap.get(hex.key) : undefined);
+        (hex: HexTile, rider?: RaceRider) => {
+            const riderToUse = rider ?? (hex ? raceManager.getRiderAtHex(hex) : undefined);
+            console.log('Clicked hex', hex, 'with rider', riderToUse);
+            if (selectedHex && selectedHex.key === hex.key) {
+                setSelectedHex(undefined);
+                setSelectedRider(undefined);
+            } else {
+                setSelectedHex(keyToHexMap.get(hex.key));
+                setSelectedRider(riderToUse);
+            }
         },
-        [route]
+        [keyToHexMap, selectedHex, raceManager]
     );
 
     const setSelectedCommandFn = useCallback(
@@ -60,9 +63,7 @@ export function LiveRace({ race, route }: LiveRaceProps): JSX.Element {
             <MapPanel raceManager={raceManager} selectedHex={selectedHex} setSelectedHexFn={setSelectedHexFn} />
             <button onClick={endTurn}>End turn</button>
             <HexInfoPanel hex={selectedHex} />
-            {selectedHex?.rider && (
-                <RiderCommandPanel rider={selectedHex.rider} setSelectedCommand={setSelectedCommandFn} />
-            )}
+            {selectedRider && <RiderCommandPanel rider={selectedRider} setSelectedCommand={setSelectedCommandFn} />}
         </div>
     );
 }

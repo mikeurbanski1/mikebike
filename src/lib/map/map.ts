@@ -1,5 +1,3 @@
-import type { RaceRider } from '../game/rider';
-
 // export interface SegmentHexTile extends HexTile {
 //     segmentNumber: number;
 //     isCenter: boolean;
@@ -26,7 +24,6 @@ export class HexTile {
 export class SegmentHexTile extends HexTile {
     segmentNumber: number;
     isCenter: boolean;
-    rider?: RaceRider;
 
     constructor({ q, r, s }: HexTile, segmentNumber: number, isCenter: boolean) {
         super(q, r, s);
@@ -34,16 +31,16 @@ export class SegmentHexTile extends HexTile {
         this.isCenter = isCenter;
     }
 
-    addRider(rider: RaceRider): boolean {
-        // handle react double render
-        if (this.rider && this.rider.bibNumber !== rider.bibNumber) {
-            return false;
-        }
-        this.rider = rider;
-        return true;
-    }
+    // addRider(rider: RaceRider): boolean {
+    //     // handle react double render
+    //     if (this.rider && this.rider.bibNumber !== rider.bibNumber) {
+    //         return false;
+    //     }
+    //     this.rider = rider;
+    //     return true;
+    // }
 
-    removeRider() {
-        this.rider = undefined;
-    }
+    // removeRider() {
+    //     this.rider = undefined;
+    // }
 }

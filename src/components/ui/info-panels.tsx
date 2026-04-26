@@ -26,7 +26,7 @@ type RiderCommandPanelProps = {
     setSelectedCommand: (command: Command) => void;
 };
 export function RiderCommandPanel({ rider, setSelectedCommand }: RiderCommandPanelProps): JSX.Element {
-    const [selectedEffort, setSelectedEffort] = React.useState<Effort | null>(null);
+    const [selectedEffort, setSelectedEffort] = React.useState<Effort | undefined>(rider.nextCommand?.effort);
 
     const handleEffortClick = (effort: Effort) => {
         setSelectedEffort(effort);
