@@ -6,11 +6,14 @@ import {
     PadDirection,
     TurnDirection,
     type BoundingBox,
+    type GridSize,
     type PathSegment,
     type RawSegment,
     type RouteHexes,
     type UndirectedSegment,
+    type ViewBox,
 } from '../models/map.ts';
+import { hexHeight, hexWidth } from './consts.ts';
 
 const directions = [Direction.N, Direction.NE, Direction.SE, Direction.S, Direction.SW, Direction.NW];
 
@@ -438,4 +441,35 @@ export const normalizeSegment = (segment: RawSegment, previousSegment?: PathSegm
         ...segment,
         ...getSegmentPadding(segment),
     };
+};
+
+export const getViewDimensions = (boundingBox: BoundingBox): { gridSize: GridSize; viewBox: ViewBox } => {
+    const qDiff = boundingBox.qMax - boundingBox.qMin;
+    const rsDiff = boundingBox.rsMax - boundingBox.rsMin;
+
+    const gridSize = {
+        width: qDiff * hexWidth * 0.75 + hexWidth / 2,
+        height: rsDiff * hexHeight * 0.5 + hexHeight / 2,
+    };
+
+    const viewBox = {
+        x: boundingBox.qMin * hexWidth * 0.75 - hexWidth / 2,
+        y: boundingBox.rsMin * hexHeight * 0.5 - hexHeight / 4,
+        width: gridSize.width + hexWidth / 2, // add some padding to the right and left of the grid to account for the fact that the hexes are centered on their coordinates
+        height: gridSize.height,
+    };
+
+    // const gridSize = {
+    //     width: 1000,
+    //     height: 1000, // add an extra hex height to account for the fact that the hexes are centered on their coordinates, so we need to add some padding to the top and bottom of the grid
+    // };
+
+    // const viewBox = {
+    //     x: -500,
+    //     y: -500,
+    //     width: 1000,
+    //     height: 1000,
+    // };
+
+    return { gridSize, viewBox };
 };

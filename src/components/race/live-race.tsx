@@ -18,20 +18,24 @@ export function LiveRace({ race, route }: LiveRaceProps): JSX.Element {
         return new RaceManager(race, route);
     }, [race, route]);
 
+    const riders = raceManager.getAllRiders();
+
     const { keyToHexMap } = raceManager.routeHexes;
 
     const riderIdMap = useMemo(() => {
-        const riders = raceManager.getAllRiders();
         return riders.reduce((map, rider) => {
             map.set(rider.id, rider);
             return map;
         }, new Map<number, RaceRider>());
-    }, [raceManager]);
+    }, [riders]);
+
+    const [turn, setTurn] = React.useState(raceManager.nextTurn);
 
     const endTurn = useCallback(() => {
         raceManager.simNextTurn();
         setSelectedHex(undefined);
         setSelectedRider(undefined);
+        setTurn(raceManager.nextTurn);
     }, [raceManager]);
 
     const [selectedHex, setSelectedHex] = React.useState<SegmentHexTile | undefined>(undefined);
@@ -60,7 +64,14 @@ export function LiveRace({ race, route }: LiveRaceProps): JSX.Element {
 
     return (
         <div className="live-race">
-            <MapPanel raceManager={raceManager} selectedHex={selectedHex} setSelectedHexFn={setSelectedHexFn} />
+            <MapPanel
+                hexes={raceManager.routeHexes.hexes}
+                boundingBox={raceManager.routeHexes.boundingBox}
+                riders={riders}
+                selectedHex={selectedHex}
+                setSelectedHexFn={setSelectedHexFn}
+                turn={turn}
+            />
             <button onClick={endTurn}>End turn</button>
             <HexInfoPanel hex={selectedHex} />
             {selectedRider && <RiderCommandPanel rider={selectedRider} setSelectedCommand={setSelectedCommandFn} />}
