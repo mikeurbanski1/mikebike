@@ -11,12 +11,7 @@ export interface RouteHexes {
     hexes: SegmentHexTile[];
     keyToHexMap: Map<string, SegmentHexTile>;
     // the rectangular view that emcompasses all the hexes, used for setting the svg viewbox
-    boundingBox: {
-        qMin: number;
-        qMax: number;
-        rsMin: number;
-        rsMax: number;
-    };
+    boundingBox: BoundingBox;
 }
 
 export const TurnDirection = {
@@ -83,3 +78,15 @@ export type Axis = (typeof Axis)[keyof typeof Axis];
 //     RIGHT: 'RIGHT',
 // } as const;
 // export type RiderHexPosition = (typeof RiderHexPosition)[keyof typeof RiderHexPosition];
+
+export interface GridSize {
+    width: number;
+    height: number;
+}
+
+export interface ViewBox {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+}

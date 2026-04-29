@@ -9,9 +9,11 @@ export const generateRace = (): Race => {
 
     const team1 = new Team('Team 1');
     team1.addRider(new Rider('Team1R1', team1));
+    team1.addRider(new Rider('Team1R2', team1));
 
     const raceTeam1 = new RaceTeam(team1.name, 1);
     raceTeam1.addRaceRider(new RaceRider('Team1R1', raceTeam1, 1, new HexTile(0, 0, 0), Direction.S));
+    raceTeam1.addRaceRider(new RaceRider('Team1R2', raceTeam1, 2, new HexTile(1, 0, -1), Direction.S));
     // const team2 = new Team('Team 2', 2);
 
     // let q = 0;

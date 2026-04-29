@@ -10,6 +10,7 @@ export class RaceManager {
     race: Race;
     route: Route;
     routeHexes: RouteHexes;
+    allRiders: RaceRider[];
     hexToRiderMap: Map<string, RaceRider> = new Map();
     riderToHexMap: Map<number, SegmentHexTile> = new Map();
     nextTurn = 1;
@@ -19,13 +20,14 @@ export class RaceManager {
         this.route = route;
         this.routeHexes = generateRouteHexes(route);
 
-        this.getAllRiders().forEach((rider) => {
+        this.allRiders = this.race.teams.flatMap((team) => team.raceRiders);
+        this.allRiders.forEach((rider) => {
             this.moveRider(rider, this.routeHexes.keyToHexMap.get(rider.location.key)!);
         });
     }
 
     getAllRiders() {
-        return this.race.teams.flatMap((team) => team.raceRiders);
+        return this.allRiders;
     }
 
     getAllTeams() {
