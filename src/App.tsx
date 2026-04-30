@@ -1,6 +1,9 @@
+import React from 'react';
+
 import './App.css';
 
 import { LiveRace } from './components/race/live-race.tsx';
+import { RaceManager } from './lib/game/race-manager.ts';
 import { generateRace } from './lib/gen/race-gen.ts';
 import { simpleStraightRoute } from './lib/gen/route-gen.ts';
 import { Route } from './lib/map/route';
@@ -27,11 +30,17 @@ renderType = 'simpleStraight';
 
 let route = renderTypeToFn[renderType]();
 let race = generateRace();
+const raceManager = new RaceManager(race, route);
+
+const RaceContext = React.createContext(new RaceManager(race, route));
+export const useRaceManager = () => React.useContext(RaceContext);
 
 function App() {
     return (
         <div className="App">
-            <LiveRace route={route} race={race} />
+            <RaceContext value={raceManager}>
+                <LiveRace />
+            </RaceContext>
         </div>
     );
 }

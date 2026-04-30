@@ -44,7 +44,7 @@ body,
 }
 
 .command-panel {
-    height: 10%;
+    height: 20%;
     width: 100%;
     border: 1px solid orange;
 }
@@ -60,4 +60,8 @@ body,
 
 .effort-button-selected {
     background-color: lightblue;
+}
+
+.debug {
+    word-break: break-word;
 }

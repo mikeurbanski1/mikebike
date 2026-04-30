@@ -37,3 +37,4 @@ export const generateRace = (): Race => {
 
     return race;
 };
+ 
